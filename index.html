@@ -4,21 +4,81 @@
   <title>3D Maze</title>
   <style>
     #maze-container {
+      position: relative;
       width: 800px;
       height: 600px;
+    }
+
+    #minimap {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 200px;
+      height: 150px;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    #minimap-grid {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .minimap-cell {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: 1px solid white;
+    }
+
+    #player-position {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: 2px solid red;
+      pointer-events: none;
+    }
+
+    #enemy-position {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: 2px solid blue;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div id="maze-container"></div>
 
+  <div id="maze-container">
+    <div id="minimap">
+      <div id="minimap-grid"></div>
+      <div id="player-position"></div>
+      <div id="enemy-position"></div>
+    </div>
+  </div>
+
+  <div id="game-over" style="display: none;">
+    <p id="game-over-text"></p>
+  </div>
+ 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
   <script>
+    let startTime = Date.now();
+
     // Define maze dimensions
     const mazeWidth = 10;
     const mazeHeight = 10;
     const cellSize = 50;
-
+ 
     // Define maze structure
     const maze = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -26,29 +86,31 @@
       [1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 2, 1, 1, 1, 1],
-      [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-      [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+      [1, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+      [1, 1, 0, 1, 0, 1, 0, 0, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
-
+ 
     // Initialize the scene, camera, and renderer
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(800, 600);
     document.getElementById('maze-container').appendChild(renderer.domElement);
-
+ 
     // Load textures
     const groundTexture = new THREE.TextureLoader().load('assets/textures/ground_diffuse.jpg');
     const wallTexture = new THREE.TextureLoader().load('assets/textures/wall_diffuse.jpg');
     const ceilingTexture = new THREE.TextureLoader().load('assets/textures/roof_diffuse.jpg');
+    const enemyTexture = new THREE.TextureLoader().load('assets/textures/enemy.png'); // Enemy sprite texture
 
     // Create materials for maze elements
     const wallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture });
     const floorMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
     const ceilingMaterial = new THREE.MeshBasicMaterial({ map: ceilingTexture });
+    const enemyMaterial = new THREE.MeshBasicMaterial({ map: enemyTexture }); // Enemy sprite material
 
     // Create maze objects
     for (let row = 0; row < mazeHeight; row++) {
@@ -70,7 +132,7 @@
           floorMesh.position.z = row * cellSize - (mazeHeight / 2) * cellSize + cellSize / 2;
           floorMesh.rotation.x = -Math.PI / 2;
           scene.add(floorMesh);
-
+ 
           const ceiling = new THREE.PlaneGeometry(cellSize, cellSize);
           const ceilingMesh = new THREE.Mesh(ceiling, ceilingMaterial);
           ceilingMesh.position.x = col * cellSize - (mazeWidth / 2) * cellSize + cellSize / 2;
@@ -81,10 +143,10 @@
         }
       }
     }
-
+ 
     // Set up camera position and rotation
     camera.position.set(cellSize / 2, cellSize / 2, -cellSize/3);
-
+ 
     // Player controls
     const playerControls = {
       moveForward: false,
@@ -92,31 +154,31 @@
       moveLeft: false,
       moveRight: false,
     };
-
+ 
     let isMousePressed = false;
     let previousMouseX = 0;
-
+ 
     document.addEventListener('keydown', (event) => {
       handlePlayerControls(event.keyCode, true);
     });
-
+ 
     document.addEventListener('keyup', (event) => {
       handlePlayerControls(event.keyCode, false);
     });
-
+ 
     document.addEventListener('mousedown', (event) => {
       if (event.button === 0) {
         isMousePressed = true;
         previousMouseX = event.clientX;
       }
     });
-
+ 
     document.addEventListener('mouseup', (event) => {
       if (event.button === 0) {
         isMousePressed = false;
       }
     });
-
+ 
     document.addEventListener('mousemove', (event) => {
       if (isMousePressed) {
         const mouseDeltaX = event.clientX - previousMouseX;
@@ -124,49 +186,98 @@
         rotateCamera(mouseDeltaX);
       }
     });
-
+ 
     function handlePlayerControls(keyCode, isPressed) {
       switch (keyCode) {
         case 87: // W key
         case 38: // Arrow up
           playerControls.moveForward = isPressed;
           break;
-
+ 
         case 83: // S key
         case 40: // Arrow down
           playerControls.moveBackward = isPressed;
           break;
-
+ 
         case 65: // A key
         case 37: // Arrow left
           playerControls.moveLeft = isPressed;
           break;
-
+ 
         case 68: // D key
         case 39: // Arrow right
           playerControls.moveRight = isPressed;
           break;
       }
     }
+ 
+    const enemySize = cellSize * 0.8; // Adjust the size of the enemy sprite as desired
+    const enemyGeometry = new THREE.BoxGeometry(enemySize*0.5, enemySize, enemySize*0.3);
+    const enemyMesh = new THREE.Mesh(enemyGeometry, enemyMaterial);
+
+    function spawnEnemy() {
+      let validPosition = false;
+      let enemyPosition;
+
+      // Generate a random position for the enemy
+      while (!validPosition) {
+        const row = Math.floor(Math.random() * mazeHeight);
+        const col = Math.floor(Math.random() * mazeWidth);
+
+        // Check if the position is inside a wall or too close to the camera
+        const distance = Math.sqrt((row * cellSize - camera.position.z) ** 2 + (col * cellSize - camera.position.x) ** 2);
+        if (!maze[row][col] && distance >= 100) {
+          validPosition = true;
+          enemyPosition = { row, col };
+        }
+      }
+
+      // Set enemy position and update enemyMesh
+      enemyMesh.position.x = enemyPosition.col * cellSize - (mazeWidth / 2) * cellSize + cellSize / 2;
+      enemyMesh.position.z = enemyPosition.row * cellSize - (mazeHeight / 2) * cellSize + cellSize / 2;
+      enemyMesh.position.y = cellSize*0.4;
+    }
+
+    spawnEnemy();
+
+    enemyMesh.scale.x = 0.5;
+    scene.add(enemyMesh);
+
 
     function checkCollision(position) {
       const cameraPosition = position.clone();
-
+ 
       // Iterate through all maze walls
       for (let i = 0; i < scene.children.length; i++) {
         const object = scene.children[i];
-
+ 
         // Check if the object is a maze wall
         if (object.mazeWall) {
           const wallBoundingBox = new THREE.Box3().setFromObject(object);
-
+ 
           if (wallBoundingBox.containsPoint(cameraPosition)) {
             return true; // Collision occurs
           }
         }
       }
-
+ 
       return false; // No collision
+    }
+
+    let isGameOver = false;
+
+    function checkCollisionEnemy(position) {
+        const cameraPosition = position.clone();
+        
+        // Check collision with enemy
+        const enemyBoundingBox = new THREE.Box3().setFromObject(enemyMesh);
+        
+        if (enemyBoundingBox.containsPoint(cameraPosition)) {
+            showGameOverScreen(); // Collision with enemy
+            return true;
+        }
+        
+        return false; // No collision
     }
 
     function moveBackToPreviousPosition() {
@@ -175,68 +286,105 @@
       camera.getWorldDirection(direction);
       const backwardMovement = direction.clone().negate().multiplyScalar(moveSpeed);
       const newPosition = camera.position.clone().add(backwardMovement);
-
+ 
       if (!checkCollision(newPosition)) {
         camera.position.copy(newPosition);
       }
     }
-
+ 
     function rotateCamera(deltaX) {
       const rotationSpeed = 0.01;
       camera.rotation.y -= deltaX * rotationSpeed;
     }
 
+    function showGameOverScreen() {
+      const currentTime = Date.now();
+      const duration = Math.floor((currentTime - startTime) / 1000); // Calculate duration in seconds
+
+      const gameOverScreen = document.getElementById('game-over');
+      gameOverScreen.style.display = 'block';
+
+      const gameOverTitle = document.createElement('h1');
+      gameOverTitle.innerText = 'Game Over';
+      gameOverScreen.appendChild(gameOverTitle);
+
+      const gameOverText = document.createElement('p');
+      gameOverText.innerText = `You lasted ${duration} seconds.`;
+      gameOverScreen.appendChild(gameOverText);
+
+      const restartButton = document.createElement('button');
+      restartButton.innerText = 'Restart';
+      restartButton.addEventListener('click', restartGame);
+      gameOverScreen.appendChild(restartButton);
+
+      // Disable player controls
+      playerControls.moveForward = false;
+      playerControls.moveBackward = false;
+      playerControls.moveLeft = false;
+      playerControls.moveRight = false;
+
+      // Stop enemy movement
+      isGameOver = true;
+    }
+
+    function restartGame() {
+      location.reload();
+    }
+
     // Update function
     function update() {
+      if (isGameOver) {
+        return;
+      }
       const moveSpeed = 0.6;
-
+ 
       if (playerControls.moveForward) {
         const direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         const newPosition = camera.position.clone().addScaledVector(direction, moveSpeed);
-
-        if (!checkCollision(newPosition)) {
+ 
+        if (!checkCollision(newPosition) && !checkCollisionEnemy(newPosition)) {
           camera.position.copy(newPosition);
         } else {
           playerControls.moveForward = false; // Disable forward movement
           moveBackToPreviousPosition();
         }
       }
-
+ 
       if (playerControls.moveBackward) {
         const direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         const newPosition = camera.position.clone().addScaledVector(direction, -moveSpeed);
-
-        if (!checkCollision(newPosition)) {
+ 
+        if (!checkCollision(newPosition) && !checkCollisionEnemy(newPosition)) {
           camera.position.copy(newPosition);
         } else {
           playerControls.moveBackward = false; // Disable forward movement
           moveBackToPreviousPosition();
         }
       }
-
+ 
       if (playerControls.moveLeft) {
         const direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         const perpendicular = new THREE.Vector3(direction.z, 0, -direction.x); // Calculate perpendicular vector
         const newPosition = camera.position.clone().addScaledVector(perpendicular, moveSpeed);
-
-        if (!checkCollision(newPosition)) {
+ 
+        if (!checkCollision(newPosition) && !checkCollisionEnemy(newPosition)) {
           camera.position.copy(newPosition);
         } else {
           playerControls.moveLeft = false; // Disable forward movement
           moveBackToPreviousPosition();
         }
       }
-
+ 
       if (playerControls.moveRight) {
         const direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         const perpendicular = new THREE.Vector3(-direction.z, 0, direction.x); // Calculate perpendicular vector
         const newPosition = camera.position.clone().addScaledVector(perpendicular, moveSpeed);
-
-        if (!checkCollision(newPosition)) {
+ 
+        if (!checkCollision(newPosition) && !checkCollisionEnemy(newPosition)) {
           camera.position.copy(newPosition);
         } else {
           playerControls.moveRight = false; // Disable forward movement
@@ -244,14 +392,84 @@
         }
       }
     }
+    
+    // Variables to control the smooth movement
+    let smoothMoveFrame = 0;
+    const totalSmoothMoveFrames = 10; // Adjust this value to control the smoothness
 
-    // Render loop
-    function animate() {
-      requestAnimationFrame(animate);
-      update();
-      renderer.render(scene, camera);
+    function moveEnemy() {
+      if (isGameOver) {
+        return;
+      }
+        const randomNum = Math.floor(Math.random() * 20) + 1;
+        if (randomNum <= 10) {
+            const moveSpeed = 2;
+            const directions = [
+                new THREE.Vector3(1, 0, 0),   // Right
+                new THREE.Vector3(-1, 0, 0),  // Left
+                new THREE.Vector3(0, 0, 1),   // Forward
+                new THREE.Vector3(0, 0, -1)   // Backward
+            ];
+
+            const randomIndex = Math.floor(Math.random() * directions.length);
+            const enemyDirection = directions[randomIndex];
+
+            const newPosition = enemyMesh.position.clone().addScaledVector(enemyDirection, moveSpeed);
+
+            if (!checkCollision(newPosition)) {
+                enemyMesh.position.copy(newPosition);
+            }
+        }
     }
 
+    const minimapContainer = document.getElementById('minimap');
+    const playerPositionIndicator = document.getElementById('player-position');
+    const enemyPositionIndicator = document.getElementById('enemy-position');
+
+    const minimapGrid = document.getElementById('minimap-grid');
+    minimapGrid.style.gridTemplateColumns = `repeat(${mazeWidth}, 1fr)`;
+    minimapGrid.style.gridTemplateRows = `repeat(${mazeHeight}, 1fr)`;
+
+    for (let row = 0; row < mazeHeight; row++) {
+      for (let col = 0; col < mazeWidth; col++) {
+        const cellType = maze[row][col];
+        const cell = document.createElement('div');
+        cell.className = 'minimap-cell';
+        cell.style.backgroundColor = cellType === 0 ? 'black' : 'white';
+        minimapGrid.appendChild(cell);
+      }
+    }
+    function updateMinimap() {
+      // Calculate minimap scale
+      const minimapScale = Math.min(minimapContainer.offsetWidth / mazeWidth, minimapContainer.offsetHeight / mazeHeight);
+
+      // Update player position indicator
+      const playerX = camera.position.x + (mazeWidth * cellSize) / 2;
+      const playerZ = camera.position.z + (mazeHeight * cellSize) / 2;
+      playerPositionIndicator.style.transform = `translate(${playerX * minimapScale}px, ${playerZ * minimapScale}px)`;
+
+      // Update enemy position indicator
+      const enemyX = enemyMesh.position.x + (mazeWidth * cellSize) / 2;
+      const enemyZ = enemyMesh.position.z + (mazeHeight * cellSize) / 2;
+      enemyPositionIndicator.style.transform = `translate(${enemyX * minimapScale}px, ${enemyZ * minimapScale}px)`;
+    }
+
+
+    let lastEnemyMoveTime = Date.now();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        update();
+        const currentTime = Date.now();
+
+        if (currentTime - lastEnemyMoveTime >= 100) {
+            moveEnemy();
+            lastEnemyMoveTime = currentTime;
+        }
+        updateMinimap();
+        renderer.render(scene, camera);
+    }
+ 
     // Start the animation
     animate();
   </script>
