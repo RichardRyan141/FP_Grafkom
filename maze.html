@@ -74,9 +74,9 @@
           const ceiling = new THREE.PlaneGeometry(cellSize, cellSize);
           const ceilingMesh = new THREE.Mesh(ceiling, ceilingMaterial);
           ceilingMesh.position.x = col * cellSize - (mazeWidth / 2) * cellSize + cellSize / 2;
-          ceilingMesh.position.y = cellSize * 3;
+          ceilingMesh.position.y = cellSize * 2;
           ceilingMesh.position.z = row * cellSize - (mazeHeight / 2) * cellSize + cellSize / 2;
-          ceilingMesh.rotation.x = -Math.PI / 2;
+          ceilingMesh.rotation.x = Math.PI / 2;
           scene.add(ceilingMesh);
         }
       }
