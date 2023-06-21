@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>3D Maze</title>
+  <title>Escape Maze!!</title>
+  <link rel="icon" type="image/png" href="assets/favicon.ico">
   <style>
     #maze-container {
       position: relative;
@@ -101,9 +102,13 @@
     document.getElementById('maze-container').appendChild(renderer.domElement);
  
     // Load textures
-    const groundTexture = new THREE.TextureLoader().load('assets/textures/ground_diffuse.jpg');
-    const wallTexture = new THREE.TextureLoader().load('assets/textures/wall_diffuse.jpg');
-    const ceilingTexture = new THREE.TextureLoader().load('assets/textures/roof_diffuse.jpg');
+    const groundTexture = new THREE.TextureLoader().load('assets/textures/old-wood.jpg');
+    const wallTexture = new THREE.TextureLoader().load('assets/textures/old-wood-2.jpg');
+    const ceilingTexture = new THREE.TextureLoader().load('assets/textures/ceilings.png');
+    // const groundTexture = new THREE.TextureLoader().load('assets/textures/old-wood.jpg');
+    // const wallTexture = new THREE.TextureLoader().load('assets/textures/horror-wall.jpg');
+    // const ceilingTexture = new THREE.TextureLoader().load('assets/textures/antique.jpg');
+    
     const enemyTexture = new THREE.TextureLoader().load('assets/textures/enemy.png'); // Enemy sprite texture
 
     // Create materials for maze elements
