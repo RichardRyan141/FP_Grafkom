@@ -41,9 +41,9 @@
     document.getElementById('maze-container').appendChild(renderer.domElement);
 
     // Load textures
-    const groundTexture = new THREE.TextureLoader().load('textures/ground_diffuse.jpg');
-    const wallTexture = new THREE.TextureLoader().load('textures/wall_diffuse.jpg');
-    const ceilingTexture = new THREE.TextureLoader().load('textures/roof_diffuse.jpg');
+    const groundTexture = new THREE.TextureLoader().load('assets/textures/ground_diffuse.jpg');
+    const wallTexture = new THREE.TextureLoader().load('assets/textures/wall_diffuse.jpg');
+    const ceilingTexture = new THREE.TextureLoader().load('assets/textures/roof_diffuse.jpg');
 
     // Create materials for maze elements
     const wallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture });
