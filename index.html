@@ -25,8 +25,8 @@
       [1, 0, 0, 0, 1, 0, 1, 0, 0, 1],
       [1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-      [1, 1, 0, 1, 0, 0, 0, 1, 0, 1],
+      [1, 1, 1, 1, 1, 2, 1, 1, 1, 1],
+      [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
       [1, 1, 0, 1, 0, 1, 0, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
@@ -83,7 +83,7 @@
     }
 
     // Set up camera position and rotation
-    camera.position.set(cellSize / 2, cellSize / 2, 0);
+    camera.position.set(cellSize / 2, cellSize / 2, -cellSize/3);
 
     // Player controls
     const playerControls = {
