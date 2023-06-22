@@ -628,6 +628,15 @@
         }
       }
 
+      // Add ambient light for overall scene illumination
+const ambientLight = new THREE.AmbientLight(0x333333); // Dark gray color
+ambientLight.intensity = 0.5; // Adjust the intensity to make the scene dimmer
+scene.add(ambientLight);
+
+// Optionally, you can also adjust the background color to match the dim lighting
+scene.background = new THREE.Color(0x111111); // Darker background color
+
+
       function update() {
         if (isGameOver) {
           return;
