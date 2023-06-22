@@ -189,8 +189,8 @@
   
   <div id="maze-container">
     <div id="start-screen">
-      <div id="audio-logo" onclick="playBackgroundMusic()">
-        <img src="assets/img/audio.png" alt="Audio Logo" />
+      <div id="audio-logo" onclick="playLobbyMusic()">
+        <img src="assets/img/{{ audioLobbyPlay ? 'disable-audio.png' : 'audio.png' }}" alt="Audio Logo" />
       </div>
       <h1>Welcome to </h1>
       <p> Escape Maze!!</p>
@@ -249,27 +249,42 @@
 
     const lobbyAudio = document.getElementById('lobby');
 
+    var audioLobbyPlay = false;
+    var audioBgmPlay = false;
+
     function playBackgroundMusic() {
-      const backgroundMusic = document.getElementById('bgm');
-      backgroundMusic.play();
-      stopLobbyMusic();
+      if (!audioBgmPlay) {
+        const backgroundMusic = document.getElementById('bgm');
+        backgroundMusic.play();
+        audioBgmPlay = true;
+        stopLobbyMusic();
+      } else {
+        stopBackgroundMusic();
+      }
     }
 
     function stopBackgroundMusic() {
       const backgroundMusic = document.getElementById('bgm');
       backgroundMusic.pause();
+      audioBgmPlay = false;
     }
 
     // Function to play the lobby music
   function playLobbyMusic() {
-    lobbyAudio.play();
-    stopBackgroundMusic();
+    if (!audioLobbyPlay) {
+      lobbyAudio.play();
+      audioLobbyPlay = true;
+      stopBackgroundMusic();
+    } else {
+      stopLobbyMusic();
+    }
   }
 
   // Function to stop the lobby music
   function stopLobbyMusic() {
     lobbyAudio.pause();
     lobbyAudio.currentTime = 0;
+    audioLobbyPlay = false;
   }
 
   // Play the lobby music when the page is fully loaded
