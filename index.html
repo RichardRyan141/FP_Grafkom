@@ -290,8 +290,7 @@
       audioLogoImg.src = 'assets/img/audio.png';
     }
 
- // Play the lobby music when the page is fully loaded
-  window.addEventListener('load', playLobbyMusic);
+    playLobbyMusic();
   startButton.addEventListener('click', () => {
     mazeWidth = parseInt(mazeWidthInput.value);
     mazeHeight = parseInt(mazeHeightInput.value);
