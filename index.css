@@ -1,0 +1,241 @@
+body {
+    background: #0c0c0c;
+}
+
+#maze-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 600px;
+}
+
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(assets/textures/horror-wall.jpg);
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+}
+
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 999;
+    display: none;
+}
+
+#game-over p {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+  
+#game-over button {
+    padding: 10px 20px;
+    background-color: #5e483b;
+    border: none;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#minimap-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 200px;
+    height: 200px;
+    background-color: #333;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #5e483b;
+    box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+    color:  rgb(187, 185, 185);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #8a634e;
+    box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+    color:  rgb(248, 248, 248);
+}
+
+button#start-button, button + button {
+    color: rgb(187, 185, 185);
+}
+
+button#start-button, button + button:hover {
+    color: rgb(187, 185, 185);
+}
+
+button#start-button, button#start-button:hover {
+    color: rgb(187, 185, 185);
+    box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+}
+
+button + button {
+    margin-top: 10px;
+}
+
+#minimap-grid {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.minimap-cell {
+    box-sizing: border-box;
+    border: 1px solid #555;
+    float: left; /* Added this line */
+}
+
+.visited {
+    background-color: #aaa;
+}
+
+.player {
+    background-color: red;
+}
+
+.portal {
+    background-color: blue;
+}
+
+h1 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+}
+
+p {
+    font-family: 'Nosifer', cursive;
+    font-size: 48px;
+    text-align: center;
+    color: rgb(165, 40, 40);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-family: 'Nunito', extra-light;
+    font-size: 17px;
+    text-align: center;
+    color: rgb(192, 178, 178);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+}
+
+h3 {
+    font-family: 'Nunito', extra-light;
+    font-size: 17px;
+    text-align: center;
+    color: rgb(58, 56, 56);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+}
+
+p2 {
+    font-family: 'Nosifer', cursive;
+    font-size: 20px;
+    text-align: center;
+    color: rgb(165, 40, 40);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+}
+
+#audio-logo {
+    position: absolute;
+    bottom: 20px;
+    left: 95%;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+#audio-logo img {
+    width: 50px;
+    height: 50px;
+}
+
+#tombol-informasi {
+    background: url(assets/img/info.png) no-repeat center;
+    background-size: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+    width: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+    height: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+    border: none; /* Menghilangkan border tombol */
+    cursor: pointer; /* Mengubah kursor menjadi pointer saat diarahkan ke tombol */
+    position: fixed;
+    top: 10px; /* Sesuaikan dengan jarak dari atas */
+    left: 10px; /* Sesuaikan dengan jarak dari kiri */
+}
+
+#tombol-informasi:hover {
+    background-image: url(assets/img/info-hover.png); /* Gambar hover baru */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px); /* Add backdrop-filter property for blur effect */
+}
+
+.modal-content {
+    background-color: #f1d69d;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    text-align: center;
+    border-radius: 10px; /* Add border-radius property for curved border */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
