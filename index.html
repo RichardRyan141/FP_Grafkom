@@ -248,57 +248,48 @@
     mazeHeightInput.style.textAlign = 'center';
 
     const lobbyAudio = document.getElementById('lobby');
-    const audioLobbyImg = document.getElementById('audio-logo-img');
+    const audioLogoImg = document.getElementById('audio-logo-img');
 
     var audioLobbyPlay = false;
     var audioBgmPlay = false;
 
     function playBackgroundMusic() {
-    if (!audioBgmPlay) {
-      const backgroundMusic = document.getElementById('bgm');
-      if (backgroundMusic.paused) {
+      if (!audioBgmPlay) {
+        const backgroundMusic = document.getElementById('bgm');
         backgroundMusic.play();
         audioBgmPlay = true;
         stopLobbyMusic();
+      } else {
+        stopBackgroundMusic();
       }
-    } else {
-      stopBackgroundMusic();
     }
-  }
 
-  function stopBackgroundMusic() {
-    const backgroundMusic = document.getElementById('bgm');
-    if (!backgroundMusic.paused) {
+    function stopBackgroundMusic() {
+      const backgroundMusic = document.getElementById('bgm');
       backgroundMusic.pause();
       audioBgmPlay = false;
     }
-  }
 
-  // Function to play the lobby music
-  function playLobbyMusic() {
-    if (!audioLobbyPlay) {
-      if (lobbyAudio.paused) {
+    // Function to play the lobby music
+    function playLobbyMusic() {
+      if (!audioLobbyPlay) {
         lobbyAudio.play();
         audioLobbyPlay = true;
         stopBackgroundMusic();
         audioLogoImg.src = 'assets/img/disable-audio.png';
+      } else {
+        stopLobbyMusic();
       }
-    } else {
-      stopLobbyMusic();
     }
-  }
 
-  // Function to stop the lobby music
-  function stopLobbyMusic() {
-    if (!lobbyAudio.paused) {
+    // Function to stop the lobby music
+    function stopLobbyMusic() {
       lobbyAudio.pause();
       lobbyAudio.currentTime = 0;
       audioLobbyPlay = false;
       audioLogoImg.src = 'assets/img/audio.png';
     }
-  }
 
-  // Play the lobby music when the page is fully loaded
  // Play the lobby music when the page is fully loaded
   window.addEventListener('load', playLobbyMusic);
   startButton.addEventListener('click', () => {
@@ -344,7 +335,6 @@
     }
 
     function initializeMaze() {
-      playBackgroundMusic();
       startTime = Date.now();
       const cellSize = 50;
 
@@ -662,6 +652,41 @@
         }
       }
 
+const audioButton = document.createElement('button');
+audioButton.style.position = 'absolute';
+audioButton.style.bottom = '20px';
+audioButton.style.left = '95%';
+audioButton.style.transform = 'translateX(-50%)';
+audioButton.style.cursor = 'pointer';
+
+const audioButtonImage = document.querySelector('#audio-logo img');
+if (audioBgmPlay) {
+  audioButtonImage.src = 'assets/img/disable-audio.png';
+} else {
+  audioButtonImage.src = 'assets/img/audio.png';
+}
+audioButtonImage.style.width = '50px';
+audioButtonImage.style.height = '50px';
+
+audioButton.appendChild(audioButtonImage);
+audioButton.appendChild(document.createTextNode('Background Music'));
+
+function updateBgmLogo() {
+  if (audioBgmPlay) {
+    audioButtonImage.src = 'assets/img/disable-audio.png';
+  } else {
+    audioButtonImage.src = 'assets/img/audio.png';
+  }
+}
+
+audioButton.addEventListener('click', () => {
+  playBackgroundMusic();
+  updateBgmLogo();
+  console.log("Audio bgm : ", audioBgmPlay);
+});
+
+document.body.appendChild(audioButton);
+
       function update() {
         if (isGameOver) {
           return;
@@ -816,38 +841,7 @@
       }
     }
 
-    const audioButton = document.createElement('button');
-    audioButton.style.position = 'absolute';
-    audioButton.style.bottom = '20px';
-    audioButton.style.left = '95%';
-    audioButton.style.transform = 'translateX(-50%)';
-    audioButton.style.cursor = 'pointer';
-
-    const audioButtonImage = document.querySelector('#audio-logo img');
-    if (audioBgmPlay) {
-      audioButtonImage.src = 'assets/disable-audio.png';
-    } else {
-      audioButtonImage.src = 'assets/audio.png';
-    }
-    audioButtonImage.style.width = '50px';
-    audioButtonImage.style.height = '50px';
-
-    audioButton.appendChild(audioButtonImage);
-    audioButton.appendChild(document.createTextNode('Background Music'));
-
-    function updateBgmLogo() {
-      if (audioBgmPlay) {
-        audioButtonImage.src = 'assets/disable-audio.png';
-      } else {
-        audioButtonImage.src = 'assets/audio.png';
-      }
-    }
-
-    audioButton.addEventListener('click', () => {
-      playBackgroundMusic();
-      updateBgmLogo();
-      console.log("Audio bgm : ", audioBgmPlay);
-    });
+    
 
 
   </script>
