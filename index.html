@@ -63,8 +63,10 @@
     <div id="start-screen">
       <h1>Welcome to Escape Maze!</h1>
       <p>Please select the dimensions of the maze:</p>
-      <input type="number" id="maze-width" min="5" max="30" placeholder="Width" value="5"/>
-      <input type="number" id="maze-height" min="5" max="30" placeholder="Height" value="5"/>
+      <input type="number" id="maze-width" min="8" max="30" placeholder="Width" value="8"/>
+      <input type="number" id="maze-height" min="8" max="30" placeholder="Height" value="8"/>
+      <button onclick="randomizeDimensions()">Random</button>
+
       <button id="start-button">Start Game</button>
     </div>
   </div>
@@ -114,6 +116,15 @@
     restartButton.addEventListener("click", () => {
       location.reload(); // Reload the page
     });
+
+
+    function randomizeDimensions() {
+      mazeWidth = Math.floor(Math.random() * 22) + 8;
+      mazeHeight = Math.floor(Math.random() * 22) + 8;
+      startScreen.style.display = 'none';
+      mazeContainer.style.display = 'block';
+      initializeMaze();
+    }
 
 
     function initializeMaze() {
@@ -627,12 +638,13 @@
         // Set the starting point
         maze[startY][startX] = 2;
 
-        const maxDistance = Math.floor(2 / 3 * Math.max(width, height));
+        const minDistance = Math.floor(2 / 3 * Math.max(width, height));
+        console.log("Min distance : ", minDistance);
         let targetX, targetY;
         do {
           targetX = Math.floor(Math.random() * (width - 2)) + 1;
           targetY = Math.floor(Math.random() * (height - 2)) + 1;
-        } while (Math.abs(targetX - startX) + Math.abs(targetY - startY) < maxDistance);
+        } while ((Math.abs(targetX - startX) + Math.abs(targetY - startY) < minDistance) || maze[targetX][targetY] != 0);
 
         // Change the cell to 3
         maze[targetY][targetX] = 3;
