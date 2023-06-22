@@ -628,38 +628,6 @@
         }
       }
 
-      // Add ambient light for overall scene illumination
-const ambientLight = new THREE.AmbientLight(0x333333); // Dark gray color
-ambientLight.intensity = 0.5; // Adjust the intensity to make the scene dimmer
-scene.add(ambientLight);
-
-// Optionally, you can also adjust the background color to match the dim lighting
-scene.background = new THREE.Color(0x111111); // Darker background color
-
-const spotlight = new THREE.SpotLight(0xffffff);
-  spotlight.position.copy(camera.position.clone());
-  spotlight.angle = Math.PI / 4;
-  spotlight.penumbra = 0.5;
-  spotlight.castShadow = true;
-  spotlight.shadow.mapSize.width = 1024;
-  spotlight.shadow.mapSize.height = 1024;
-  spotlight.shadow.camera.near = 0.5;
-  spotlight.shadow.camera.far = 500;
-  scene.add(spotlight);
-  scene.add(spotlight.target);
-
-  function updateSpotlight() {
-  const spotlight = scene.getObjectByName("spotlight");
-  const cameraPosition = camera.position.clone();
-  const cameraDirection = new THREE.Vector3();
-  camera.getWorldDirection(cameraDirection);
-  
-  spotlight.position.copy(cameraPosition);
-  spotlight.target.position.copy(cameraPosition.add(cameraDirection.multiplyScalar(cellSize)));
-}
-
-
-
       function update() {
         if (isGameOver) {
           return;
@@ -736,7 +704,6 @@ const spotlight = new THREE.SpotLight(0xffffff);
       function animate() {
           requestAnimationFrame(animate);
           update();
-          updateSpotlight();
           renderer.render(scene, camera);
       }
 
