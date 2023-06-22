@@ -5,54 +5,12 @@
   <link rel="icon" type="image/png" href="assets/favicon.ico">
   <style>
     #maze-container {
-      position: relative;
-      width: 800px;
-      height: 600px;
-    }
-
-    #maze-container {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 800px;
       height: 600px;
-    }
-
-    #minimap-grid {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    .minimap-cell {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: 1px solid white;
-    }
-
-    #player-position {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: 2px solid red;
-      pointer-events: none;
-    }
-
-    #enemy-position {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: 2px solid blue;
-      pointer-events: none;
     }
 
     #start-screen {
@@ -102,20 +60,15 @@
 </head>
 <body>
   <div id="maze-container">
-    <div id="minimap">
-      <div id="minimap-grid"></div>
-      <div id="player-position"></div>
-      <div id="enemy-position"></div>
-    </div>
     <div id="start-screen">
       <h1>Welcome to Escape Maze!</h1>
       <p>Please select the dimensions of the maze:</p>
-      <input type="number" id="maze-width" min="5" max="30" placeholder="Width" />
-      <input type="number" id="maze-height" min="5" max="30" placeholder="Height" />
+      <input type="number" id="maze-width" min="5" max="30" placeholder="Width" value="5"/>
+      <input type="number" id="maze-height" min="5" max="30" placeholder="Height" value="5"/>
       <button id="start-button">Start Game</button>
     </div>
   </div>
-  
+
   <div id="game-over">
     <p id="game-over-text"></p>
     <button id="restart-button">Restart Game</button>
@@ -123,7 +76,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
   <script>
-    let startTime = Date.now();
+    let startTime;
 
     let mazeWidth = 0;
     let mazeHeight = 0;
@@ -164,6 +117,7 @@
 
 
     function initializeMaze() {
+      startTime = Date.now();
       const cellSize = 50;
 
       // Define maze structure
@@ -510,6 +464,7 @@
           const direction = new THREE.Vector3();
           camera.getWorldDirection(direction);
           const newPosition = camera.position.clone().addScaledVector(direction, moveSpeed);
+          const oldPosition = camera.position.clone();
 
           if (!checkCollision(newPosition)) {
             camera.position.copy(newPosition);
@@ -594,40 +549,6 @@
           }
       }*/
 
-      const minimapContainer = document.getElementById('minimap');
-      const playerPositionIndicator = document.getElementById('player-position');
-      //const enemyPositionIndicator = document.getElementById('enemy-position');
-
-      const minimapGrid = document.getElementById('minimap-grid');
-      minimapGrid.style.gridTemplateColumns = `repeat(${mazeWidth}, 1fr)`;
-      minimapGrid.style.gridTemplateRows = `repeat(${mazeHeight}, 1fr)`;
-
-      for (let row = 0; row < mazeHeight; row++) {
-        for (let col = 0; col < mazeWidth; col++) {
-          const cellType = maze[row][col];
-          const cell = document.createElement('div');
-          cell.className = 'minimap-cell';
-          cell.style.backgroundColor = cellType === 0 ? 'black' : 'white';
-          minimapGrid.appendChild(cell);
-        }
-      }
-      function updateMinimap() {
-        // Calculate minimap scale
-        const minimapScale = Math.min(minimapContainer.offsetWidth / mazeWidth, minimapContainer.offsetHeight / mazeHeight);
-
-        // Update player position indicator
-        const playerX = camera.position.x + (mazeWidth * cellSize) / 2;
-        const playerZ = camera.position.z + (mazeHeight * cellSize) / 2;
-        playerPositionIndicator.style.transform = `translate(${playerX * minimapScale}px, ${playerZ * minimapScale}px)`;
-
-        // Update enemy position indicator
-        /*const enemyX = enemyMesh.position.x + (mazeWidth * cellSize) / 2;
-        const enemyZ = enemyMesh.position.z + (mazeHeight * cellSize) / 2;
-        enemyPositionIndicator.style.transform = `translate(${enemyX * minimapScale}px, ${enemyZ * minimapScale}px)`;
-        */
-      }
-
-
       //let lastEnemyMoveTime = Date.now();
 
       function animate() {
@@ -638,8 +559,8 @@
           if (currentTime - lastEnemyMoveTime >= 100) {
               moveEnemy();
               lastEnemyMoveTime = currentTime;
-          }*/
-          updateMinimap();
+          }
+          updateMinimap();*/
           renderer.render(scene, camera);
       }
 
