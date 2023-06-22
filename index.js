@@ -250,71 +250,26 @@ function initializeMaze() {
     function handlePlayerControls(keyCode, isPressed) {
         switch (keyCode) {
         case 87: // W key
+        case 38: // Arrow up
             playerControls.moveForward = isPressed;
             break;
-        case 38: // Arrow up
-            handleKeyPress(38);
-            break;
         case 83: // S key
+        case 40: // Arrow down
             playerControls.moveBackward = isPressed;
             break;
-        case 40: // Arrow down
-            handleKeyPress(40);
-            break;
         case 65: // A key
+        case 37: // Arrow left
             playerControls.moveLeft = isPressed;
             break;
-        case 37: // Arrow left
-            handleKeyPress(37);
-            break;
         case 68: // D key
-            playerControls.moveRight = isPressed;
-            break;
         case 39: // Arrow right
-            handleKeyPress(39);
+            playerControls.moveRight = isPressed;
             break;
         default:
             break;
         }
     }
-
-    function handleKeyPress(keyCode) {
-
-        const gameContainer = document.getElementById('game-container');
-
-        let cameraPositionX = gameContainer.scrollLeft;
-        let cameraPositionY = gameContainer.scrollTop;
-
-        const gameContainerWidth = gameContainer.offsetWidth;
-        const gameContainerHeight = gameContainer.offsetHeight;
-
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        const windowCenterX = windowWidth / 2;
-        const windowCenterY = windowHeight / 2;
-
-        const gameCenterX = gameContainerWidth / 2;
-        const gameCenterY = gameContainerHeight / 2;
-
-        if (keyCode === 38) { // PgUp
-            cameraPositionY -= windowCenterY;
-        } 
-        else if (keyCode === 40) { // PgDown
-            cameraPositionY += windowCenterY;
-        } 
-        else if (keyCode === 37) { // PgLeft
-            cameraPositionX -= windowCenterX;
-        } 
-        else if (keyCode === 39) { // PgRight
-            cameraPositionX += windowCenterX;
-        }
-
-        const newCameraPositionX = Math.max(0, Math.min(cameraPositionX, gameContainerWidth - windowWidth));
-        const newCameraPositionY = Math.max(0, Math.min(cameraPositionY, gameContainerHeight - windowHeight));
-        gameContainer.scrollTo(newCameraPositionX, newCameraPositionY);
-    }
-
+    
     function checkCollision(position) {
         const cameraPosition = position.clone();
 
