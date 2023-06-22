@@ -250,10 +250,11 @@
     const lobbyAudio = document.getElementById('lobby');
     const audioLogoImg = document.getElementById('audio-logo-img');
 
-    var audioLobbyPlay = false;
+    var audioLobbyPlay = true;
     var audioBgmPlay = false;
 
     function playBackgroundMusic() {
+      //console.log("Bgm : ", audioBgmPlay);
       if (!audioBgmPlay) {
         const backgroundMusic = document.getElementById('bgm');
         backgroundMusic.play();
@@ -265,6 +266,8 @@
     }
 
     function stopBackgroundMusic() {
+      //console.log("Bgm : ", audioBgmPlay);
+
       const backgroundMusic = document.getElementById('bgm');
       backgroundMusic.pause();
       audioBgmPlay = false;
@@ -272,6 +275,7 @@
 
     // Function to play the lobby music
     function playLobbyMusic() {
+      console.log("Lobby : ", audioLobbyPlay);
       if (!audioLobbyPlay) {
         lobbyAudio.play();
         audioLobbyPlay = true;
@@ -284,13 +288,16 @@
 
     // Function to stop the lobby music
     function stopLobbyMusic() {
+      console.log("Lobby : ", audioLobbyPlay);
+
       lobbyAudio.pause();
       lobbyAudio.currentTime = 0;
       audioLobbyPlay = false;
       audioLogoImg.src = 'assets/img/audio.png';
     }
 
-    playLobbyMusic();
+    document.addEventListener('DOMContentLoaded', playLobbyMusic);
+
   startButton.addEventListener('click', () => {
     mazeWidth = parseInt(mazeWidthInput.value);
     mazeHeight = parseInt(mazeHeightInput.value);
@@ -659,11 +666,9 @@ audioButton.style.transform = 'translateX(-50%)';
 audioButton.style.cursor = 'pointer';
 
 const audioButtonImage = document.querySelector('#audio-logo img');
-if (audioBgmPlay) {
-  audioButtonImage.src = 'assets/img/disable-audio.png';
-} else {
-  audioButtonImage.src = 'assets/img/audio.png';
-}
+playBackgroundMusic();
+audioButtonImage.src = 'assets/img/disable-audio.png';
+
 audioButtonImage.style.width = '50px';
 audioButtonImage.style.height = '50px';
 
@@ -681,7 +686,6 @@ function updateBgmLogo() {
 audioButton.addEventListener('click', () => {
   playBackgroundMusic();
   updateBgmLogo();
-  console.log("Audio bgm : ", audioBgmPlay);
 });
 
 document.body.appendChild(audioButton);
