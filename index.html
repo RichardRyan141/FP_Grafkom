@@ -250,13 +250,20 @@
     const lobbyAudio = document.getElementById('lobby');
 
     function playBackgroundMusic() {
-        const backgroundMusic = document.getElementById('lobby');
-        backgroundMusic.play();
-      }
+      const backgroundMusic = document.getElementById('bgm');
+      backgroundMusic.play();
+      stopLobbyMusic();
+    }
+
+    function stopBackgroundMusic() {
+      const backgroundMusic = document.getElementById('bgm');
+      backgroundMusic.pause();
+    }
 
     // Function to play the lobby music
   function playLobbyMusic() {
     lobbyAudio.play();
+    stopBackgroundMusic();
   }
 
   // Function to stop the lobby music
@@ -311,6 +318,7 @@
     }
 
     function initializeMaze() {
+      playBackgroundMusic();
       startTime = Date.now();
       const cellSize = 50;
 
