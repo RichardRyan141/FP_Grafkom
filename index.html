@@ -636,6 +636,20 @@ scene.add(ambientLight);
 // Optionally, you can also adjust the background color to match the dim lighting
 scene.background = new THREE.Color(0x111111); // Darker background color
 
+const pointLight = new THREE.PointLight(0xffffff, 1); // White light with intensity 1
+scene.add(pointLight);
+
+function updateLightPosition() {
+  pointLight.position.copy(camera.position); // Set light's position to camera's position
+
+  // Optional: Adjust the light's position based on camera rotation
+  const cameraDirection = new THREE.Vector3();
+  camera.getWorldDirection(cameraDirection);
+  const distance = 10; // Distance between camera and light
+  const lightOffset = cameraDirection.multiplyScalar(distance);
+  pointLight.position.add(lightOffset);
+}
+
 
       function update() {
         if (isGameOver) {
@@ -713,6 +727,7 @@ scene.background = new THREE.Color(0x111111); // Darker background color
       function animate() {
           requestAnimationFrame(animate);
           update();
+          updateLightPosition();
           renderer.render(scene, camera);
       }
 
