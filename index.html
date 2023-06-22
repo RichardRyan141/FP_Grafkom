@@ -3,6 +3,9 @@
 <head>
   <title>Escape Maze!!</title>
   <link rel="icon" type="image/png" href="assets/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative&family=Nosifer&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
     #maze-container {
       position: absolute;
@@ -19,7 +22,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url(assets/textures/bg.jpg);
+      background-image: url(assets/textures/horror-wall.jpg);
       background-size: cover;
       display: flex;
       justify-content: center;
@@ -48,6 +51,7 @@
       font-size: 24px;
       margin-bottom: 10px;
     }
+    
 
     #game-over button {
       padding: 10px 20px;
@@ -70,13 +74,35 @@
     button {
       padding: 10px 20px;
       background-color: #5e483b;
-      color: black;
+      box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+      color:  rgb(187, 185, 185);
       border: none;
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
       margin-bottom: 10px;
     }
+
+    button:hover {
+    background-color: #8a634e;
+    box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+    color:  rgb(248, 248, 248);
+  }
+
+    button#start-button, button + button {
+    color: rgb(187, 185, 185);
+  }
+
+  button#start-button, button + button:hover {
+    color: rgb(187, 185, 185);
+  }
+
+  button#start-button,
+  button#start-button:hover {
+    color: rgb(187, 185, 185);
+    box-shadow: 0 0 10px rgba(138, 99, 78, 0.8);
+  }
+
 
     button + button {
       margin-top: 10px;
@@ -105,15 +131,74 @@
     .portal {
       background-color: blue;
     }
+
+    h1 {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 20px;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  p {
+    font-family: 'Nosifer', cursive;
+    font-size: 48px;
+    text-align: center;
+    color: rgb(165, 40, 40);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+  }
+
+  h2 {
+    font-family: 'Nunito', extra-light;
+    font-size: 17px;
+    text-align: center;
+    color: rgb(192, 178, 178);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  #audio-logo {
+      position: absolute;
+      bottom: 20px;
+      left: 95%;
+      transform: translateX(-50%);
+      cursor: pointer;
+    }
+
+    #audio-logo img {
+      width: 50px;
+      height: 50px;
+    }
+
   </style>
 </head>
+<audio id="lobby">
+  <source src="assets/sound/opening.mp3" />
+</audio>
+
+<audio id="bgm">
+  <source src="assets/sound/BGM.mp3" />
+</audio>
 <body>
+
+  
   <div id="maze-container">
     <div id="start-screen">
-      <h1>Welcome to Escape Maze!</h1>
-      <p>Please select the dimensions of the maze:</p>
-      <input type="number" id="maze-width" min="8" max="30" placeholder="Width" value="8"/>
-      <input type="number" id="maze-height" min="8" max="30" placeholder="Height" value="8"/>
+      <div id="audio-logo" onclick="playBackgroundMusic()">
+        <img src="assets/img/audio.png" alt="Audio Logo" />
+      </div>
+      <h1>Welcome to </h1>
+      <p> Escape Maze!!</p>
+      <h2>Please select the dimensions of the maze:</h2>
+      <br>
+      <input type="number" id="maze-width" min="8" max="30" placeholder="Width" value="10"/>
+      <input type="number" id="maze-height" min="8" max="30" placeholder="Height" value="10"/>
+      <br>
       <button onclick="randomizeDimensions()">Random</button>
 
       <button id="start-button">Start Game</button>
@@ -137,7 +222,7 @@
 
     let mazeWidth = 0;
     let mazeHeight = 0;
-
+    
     const startScreen = document.getElementById('start-screen');
     const gameOverScreen = document.getElementById('game-over');
     const gameOverText = document.getElementById('game-over-text');
@@ -146,7 +231,7 @@
     const mazeWidthInput = document.getElementById('maze-width');
     const mazeHeightInput = document.getElementById('maze-height');
     const startButton = document.getElementById('start-button');
-
+   
     // Mengubah tampilan CSS elemen menggunakan kode JavaScript
     mazeWidthInput.style.padding = '10px';
     mazeWidthInput.style.border = '1px solid #ccc';
@@ -162,17 +247,46 @@
     mazeHeightInput.style.marginBottom = '10px';
     mazeHeightInput.style.textAlign = 'center';
 
-    startButton.addEventListener('click', () => {
-      mazeWidth = parseInt(mazeWidthInput.value);
-      mazeHeight = parseInt(mazeHeightInput.value);
-      startScreen.style.display = 'none';
-      mazeContainer.style.display = 'block';
-      initializeMaze();
-    });
+    const lobbyAudio = document.getElementById('lobby');
+
+    function playBackgroundMusic() {
+        const backgroundMusic = document.getElementById('lobby');
+        backgroundMusic.play();
+      }
+
+    // Function to play the lobby music
+  function playLobbyMusic() {
+    lobbyAudio.play();
+  }
+
+  // Function to stop the lobby music
+  function stopLobbyMusic() {
+    lobbyAudio.pause();
+    lobbyAudio.currentTime = 0;
+  }
+
+  // Play the lobby music when the page is fully loaded
+ // Play the lobby music when the page is fully loaded
+  window.addEventListener('load', playLobbyMusic);
+  startButton.addEventListener('click', () => {
+    mazeWidth = parseInt(mazeWidthInput.value);
+    mazeHeight = parseInt(mazeHeightInput.value);
+    startScreen.style.display = 'none';
+    mazeContainer.style.display = 'block';
+    initializeMaze();
+    backgroundMusic.pause();
+    document.getElementById('bgm').play(); //BGM
+  });
+
+
+    // document.getElementById('bgm').play(); //BGM
 
     const gameOver = () => {
+      document.getElementById('bgm').pause(); //BGM
+      document.getElementById('lobby').play(); //BGM
       const timeTaken = calculateTimeTaken();
       gameOverText.textContent = `Congratulations!\nYou took ${timeTaken} seconds to clear the maze`;
+      gameOverText.style.fontFamily = 'Nunito, sans-serif'; // Set the font family to Nunito
       gameOverScreen.style.display = 'flex';
       mazeContainer.style.pointerEvents = 'none';
     };
@@ -211,10 +325,10 @@
       renderer.setSize(800, 600);
       document.getElementById('maze-container').appendChild(renderer.domElement);
 
-      const groundTexture = new THREE.TextureLoader().load('assets/textures/old-wood.jpg');
-      const wallTexture = new THREE.TextureLoader().load('assets/textures/old-wood-2.jpg');
-      const ceilingTexture = new THREE.TextureLoader().load('assets/textures/ceilings.png');
-      const portalTexture = new THREE.TextureLoader().load('assets/textures/portal.jpg');
+      const groundTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
+      const wallTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
+      const ceilingTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
+      const portalTexture = new THREE.TextureLoader().load('assets/textures/door.jpg');
 
       const wallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture });
       const floorMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
@@ -518,7 +632,7 @@
         if (isGameOver) {
           return;
         }
-        const moveSpeed = 1;
+        const moveSpeed = 0.5;
 
         if (playerControls.moveForward) {
           const direction = new THREE.Vector3();
@@ -667,6 +781,9 @@
         return maze;
       }
     }
+
+    
+
 
   </script>
 </body>
