@@ -166,6 +166,26 @@
     padding: 10px 0;
   }
 
+  h3 {
+    font-family: 'Nunito', extra-light;
+    font-size: 17px;
+    text-align: center;
+    color: rgb(58, 56, 56);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 10px 0;
+  }
+
+  p2 {
+    font-family: 'Nosifer', cursive;
+    font-size: 20px;
+    text-align: center;
+    color: rgb(165, 40, 40);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 0;
+  }
+
   #audio-logo {
       position: absolute;
       bottom: 20px;
@@ -177,6 +197,59 @@
     #audio-logo img {
       width: 50px;
       height: 50px;
+    }
+  
+    #tombol-informasi {
+      background: url(assets/img/info.png) no-repeat center;
+      background-size: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+      width: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+      height: 30px; /* Sesuaikan dengan ukuran yang diinginkan */
+      border: none; /* Menghilangkan border tombol */
+      cursor: pointer; /* Mengubah kursor menjadi pointer saat diarahkan ke tombol */
+      position: fixed;
+      top: 10px; /* Sesuaikan dengan jarak dari atas */
+      left: 10px; /* Sesuaikan dengan jarak dari kiri */
+    }
+    #tombol-informasi:hover {
+      background-image: url(assets/img/info-hover.png); /* Gambar hover baru */
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px); /* Add backdrop-filter property for blur effect */
+    }
+
+    .modal-content {
+      background-color: #f1d69d;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 300px;
+      text-align: center;
+      border-radius: 10px; /* Add border-radius property for curved border */
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
     }
 
   </style>
@@ -196,15 +269,24 @@
       <div id="audio-logo" onclick="playLobbyMusic()">
         <img id="audio-logo-img" src="assets/img/disable-audio.png" alt="Audio Logo" />
       </div>
-      <h1>Welcome to </h1>
-      <p> Escape Maze!!</p>
+      <div id="informasi-container">
+        <button id="tombol-informasi"></button>
+      </div>
+      <div id="custom-popup" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p2>GAME OBJECTIVE</p2>
+          <h3>Seek the door to escape as swiftly as possible through its enchanting pathways.</h3>
+        </div>
+      </div>
+      <h1>Welcome to</h1>
+      <p>Escape Maze!!</p>
       <h2>Please select the dimensions of the maze:</h2>
       <br>
       <input type="number" id="maze-width" min="8" max="30" placeholder="Width" value="10"/>
       <input type="number" id="maze-height" min="8" max="30" placeholder="Height" value="10"/>
       <br>
       <button onclick="randomizeDimensions()">Random</button>
-
       <button id="start-button">Start Game</button>
     </div>
   </div>
@@ -221,6 +303,22 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
   <script>
+
+    document.getElementById('tombol-informasi').addEventListener('click', function() {
+      var modal = document.getElementById('custom-popup');
+      modal.style.display = "block";
+
+      var closeButton = document.getElementsByClassName('close')[0];
+      closeButton.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+    });
 
     let startTime;
 
