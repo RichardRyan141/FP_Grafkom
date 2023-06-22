@@ -190,7 +190,7 @@
   <div id="maze-container">
     <div id="start-screen">
       <div id="audio-logo" onclick="playLobbyMusic()">
-        <img id="audio-logo-img" src="assets/img/audio.png" alt="Audio Logo" />
+        <img id="audio-logo-img" src="assets/img/disable-audio.png" alt="Audio Logo" />
       </div>
       <h1>Welcome to </h1>
       <p> Escape Maze!!</p>
@@ -280,7 +280,7 @@
         lobbyAudio.play();
         audioLobbyPlay = true;
         stopBackgroundMusic();
-        audioLogoImg.src = 'assets/img/disable-audio.png';
+        audioLogoImg.src = 'assets/img/audio.png';
       } else {
         stopLobbyMusic();
       }
@@ -293,7 +293,7 @@
       lobbyAudio.pause();
       lobbyAudio.currentTime = 0;
       audioLobbyPlay = false;
-      audioLogoImg.src = 'assets/img/audio.png';
+      audioLogoImg.src = 'assets/img/disable-audio.png';
     }
 
     document.addEventListener('DOMContentLoaded', playLobbyMusic);
@@ -356,8 +356,8 @@
       document.getElementById('maze-container').appendChild(renderer.domElement);
 
       const groundTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
-      const wallTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
-      const ceilingTexture = new THREE.TextureLoader().load('assets/textures/sml.jpg');
+      const wallTexture = new THREE.TextureLoader().load('assets/textures/brick.jpeg');
+      const ceilingTexture = new THREE.TextureLoader().load('assets/textures/ceilings.jpg');
       const portalTexture = new THREE.TextureLoader().load('assets/textures/door.jpg');
 
       const wallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture });
@@ -677,9 +677,9 @@ audioButton.appendChild(document.createTextNode('Background Music'));
 
 function updateBgmLogo() {
   if (audioBgmPlay) {
-    audioButtonImage.src = 'assets/img/disable-audio.png';
-  } else {
     audioButtonImage.src = 'assets/img/audio.png';
+  } else {
+    audioButtonImage.src = 'assets/img/disable-audio.png';
   }
 }
 
