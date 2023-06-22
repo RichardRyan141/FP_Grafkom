@@ -190,7 +190,7 @@
   <div id="maze-container">
     <div id="start-screen">
       <div id="audio-logo" onclick="playLobbyMusic()">
-        <img src="assets/img/{{ audioLobbyPlay ? 'disable-audio.png' : 'audio.png' }}" alt="Audio Logo" />
+        <img id="audio-logo-img" src="assets/img/audio.png" alt="Audio Logo" />
       </div>
       <h1>Welcome to </h1>
       <p> Escape Maze!!</p>
@@ -248,33 +248,41 @@
     mazeHeightInput.style.textAlign = 'center';
 
     const lobbyAudio = document.getElementById('lobby');
+    const audioLobbyImg = document.getElementById('audio-logo-img');
 
     var audioLobbyPlay = false;
     var audioBgmPlay = false;
 
     function playBackgroundMusic() {
-      if (!audioBgmPlay) {
-        const backgroundMusic = document.getElementById('bgm');
+    if (!audioBgmPlay) {
+      const backgroundMusic = document.getElementById('bgm');
+      if (backgroundMusic.paused) {
         backgroundMusic.play();
         audioBgmPlay = true;
         stopLobbyMusic();
-      } else {
-        stopBackgroundMusic();
       }
+    } else {
+      stopBackgroundMusic();
     }
+  }
 
-    function stopBackgroundMusic() {
-      const backgroundMusic = document.getElementById('bgm');
+  function stopBackgroundMusic() {
+    const backgroundMusic = document.getElementById('bgm');
+    if (!backgroundMusic.paused) {
       backgroundMusic.pause();
       audioBgmPlay = false;
     }
+  }
 
-    // Function to play the lobby music
+  // Function to play the lobby music
   function playLobbyMusic() {
     if (!audioLobbyPlay) {
-      lobbyAudio.play();
-      audioLobbyPlay = true;
-      stopBackgroundMusic();
+      if (lobbyAudio.paused) {
+        lobbyAudio.play();
+        audioLobbyPlay = true;
+        stopBackgroundMusic();
+        audioLogoImg.src = 'assets/img/disable-audio.png';
+      }
     } else {
       stopLobbyMusic();
     }
@@ -282,9 +290,12 @@
 
   // Function to stop the lobby music
   function stopLobbyMusic() {
-    lobbyAudio.pause();
-    lobbyAudio.currentTime = 0;
-    audioLobbyPlay = false;
+    if (!lobbyAudio.paused) {
+      lobbyAudio.pause();
+      lobbyAudio.currentTime = 0;
+      audioLobbyPlay = false;
+      audioLogoImg.src = 'assets/img/audio.png';
+    }
   }
 
   // Play the lobby music when the page is fully loaded
@@ -805,7 +816,38 @@
       }
     }
 
-    
+    const audioButton = document.createElement('button');
+    audioButton.style.position = 'absolute';
+    audioButton.style.bottom = '20px';
+    audioButton.style.left = '95%';
+    audioButton.style.transform = 'translateX(-50%)';
+    audioButton.style.cursor = 'pointer';
+
+    const audioButtonImage = document.querySelector('#audio-logo img');
+    if (audioBgmPlay) {
+      audioButtonImage.src = 'assets/disable-audio.png';
+    } else {
+      audioButtonImage.src = 'assets/audio.png';
+    }
+    audioButtonImage.style.width = '50px';
+    audioButtonImage.style.height = '50px';
+
+    audioButton.appendChild(audioButtonImage);
+    audioButton.appendChild(document.createTextNode('Background Music'));
+
+    function updateBgmLogo() {
+      if (audioBgmPlay) {
+        audioButtonImage.src = 'assets/disable-audio.png';
+      } else {
+        audioButtonImage.src = 'assets/audio.png';
+      }
+    }
+
+    audioButton.addEventListener('click', () => {
+      playBackgroundMusic();
+      updateBgmLogo();
+      console.log("Audio bgm : ", audioBgmPlay);
+    });
 
 
   </script>
